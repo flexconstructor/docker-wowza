@@ -105,7 +105,7 @@ initialize_log_dir
 rewire_wowza
 
 if [[ -z ${1} ]]; then
-  exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+  exec /usr/bin/supervisord -n -c /etc/supervisord.conf
 else
   exec "$@"
 fi

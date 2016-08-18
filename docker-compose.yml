@@ -1,13 +1,15 @@
-Wowza:
-  image: sameersbn/wowza:4.1.2-8
-  environment:
-    - WOWZA_ACCEPT_LICENSE=yes
-    - WOWZA_KEY=
-  ports:
-    - "1935:1935"
-    - "8086:8086"
-    - "8087:8087"
-    - "8088:8088"
-  volumes:
-    - /srv/docker/wowza/data:/var/lib/wowza
-    - /srv/docker/wowza/log:/var/log/wowza
+version: '2'
+services:
+  wowza:
+    build:
+      context: .
+    image: centos-wowza
+    container_name: centos-wowza-test
+    environment:
+      - WOWZA_ACCEPT_LICENSE=yes
+      - WOWZA_KEY=
+    ports:
+      - "1935:1935"
+      - "8086:8086"
+      - "8087:8087"
+      - "8088:8088"

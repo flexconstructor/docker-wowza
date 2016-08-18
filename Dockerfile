@@ -1,13 +1,16 @@
-FROM sameersbn/ubuntu:14.04.20160727
+#FROM nimmis/java-centos:openjdk-7-jdk
+FROM centos
 MAINTAINER sameer@damagehead.com
 
 ENV WOWZA_VERSION=4.3.0 \
     WOWZA_DATA_DIR=/var/lib/wowza \
     WOWZA_LOG_DIR=/var/log/wowza
+RUN yum update -y \
+ && yum install -y wget openjdk-7-jre expect tar python-setuptools
+RUN easy_install supervisor
+RUN mkdir -p /var/log/supervisor
+RUN echo_supervisord_conf > /etc/supervisord.conf
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y wget supervisor openjdk-7-jre expect \
- && rm -rf /var/lib/apt/lists/*
 
 COPY prepare.sh interaction.exp /app/
 RUN /app/prepare.sh
