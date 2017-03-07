@@ -1,29 +1,31 @@
-FROM flexconstructor/docker-container-monitor
+FROM wowzamedia/wowza-streaming-engine-linux:latest
 MAINTAINER flexconstructor@gmail.com
 
-# -------- Sets environment variables. -------
+ENV WOWZA_VERSION=4.6.0
+ENV JAVA_HOME=/usr/local/WowzaStreamingEngine-${WOWZA_VERSION}/java
+ENV PATH=$PATH:$JAVA_HOME/bin
 
-ENV WOWZA_VERSION=4.3.0           \
-    WOWZA_DATA_DIR=/var/lib/wowza \
-    WOWZA_LOG_DIR=/var/log/wowza
+RUN apt-get -y update && apt-get -y install openssl
 
-# -------- Install dependencies. -------------
-RUN yum update -y \
- && yum install -y wget openjdk-7-jre expect tar
+WORKDIR /usr/local/WowzaStreamingEngine-${WOWZA_VERSION}/conf
+RUN keytool -genkey -keysize 2048 -alias wowzaprivatekey -keyalg RSA \
+    -keystore ssl.instrumentisto.com.jks \
+    -dNAME "CN=localhost, \
+            OU=http://localhost, \
+            O=localhost, \
+            L=Sofia, S=Sofia, \
+            C=Bulgaria" \
+    -storepass qwerty123 -alias wowzaprivatekey -keypass qwerty123
 
-# -------- Copy and run prepare script. ------
-COPY prepare.sh interaction.exp /app/
-RUN /app/prepare.sh
+RUN mkdir webrtc && chmod +x webrtc
+RUN mkdir -p /usr/local/WowzaStreamingEngine-${WOWZA_VERSION}/applications/webrtc \
+&& chmod +x  /usr/local/WowzaStreamingEngine-${WOWZA_VERSION}/applications/webrtc
+COPY ./conf/Application.xml webrtc/Application.xml
+COPY ./conf/VHost.xml VHost.xml
+COPY ./conf/Server.xml Server.xml
+WORKDIR /usr/local/WowzaStreamingEngine
+RUN mkdir -p htdocs/webrtc
+COPY ./html htdocs/webrtc
 
-# ---- Copy and run entrypoint script. -------
-COPY entrypoint.sh /sbin/entrypoint.sh
-RUN chmod 755 /sbin/entrypoint.sh
 
-# ---------- Expose ports. -------------------
-EXPOSE 1935/tcp 8086/tcp 8087/tcp 8088/tcp
 
-# ---------- Sets data volumes. --------------
-VOLUME ["${WOWZA_DATA_DIR}", "${WOWZA_LOG_DIR}"]
-
-# ----------- Sets entrypoint. ---------------
-ENTRYPOINT ["/sbin/entrypoint.sh"]

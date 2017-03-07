@@ -3,13 +3,19 @@ services:
   wowza:
     build:
       context: .
-    image: centos-wowza
-    container_name: centos-wowza-test
+    image: flexconstructor/wowza-webrtc
+    container_name: wowza
     environment:
-      - WOWZA_ACCEPT_LICENSE=yes
-      - WOWZA_KEY=
+      - WSE_LIC=ET1E4-nMFp4-46zDu-6Kv7M-DnyAp-xvyz3-6TdnZNGXhyTY
     ports:
       - "1935:1935"
       - "8086:8086"
       - "8087:8087"
       - "8088:8088"
+      - "443:8443"
+      - "9443:9443"
+    volumes:
+      - ./logs/engine:/usr/local/WowzaStreamingEngine/logs
+      - ./logs/manager:/usr/local/WowzaStreamingEngine/manager/logs
+      - ./logs/supervisord:/supervisor/supervisord.log
+    entrypoint: /sbin/entrypoint.sh

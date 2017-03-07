@@ -1,9 +1,5 @@
 .git
 .gitignore
-support
 docker-compose.yml
-LICENSE
 Makefile
-VERSION
 README.md
-Changelog.md
