@@ -118,7 +118,16 @@ function pageReady()
 
     var constraints =
     {
-		video: true,
+        video: {
+            mandatory: {
+                minWidth: 320,
+                maxWidth: 1280,
+                minHeight: 240,
+                maxHeight: 720,
+                minFrameRate: 16,
+                maxFrameRate: 30
+            }
+        },
 		audio: true,
     };
 

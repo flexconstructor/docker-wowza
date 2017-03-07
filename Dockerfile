@@ -23,6 +23,7 @@ COPY conf/Server.xml Server.xml
 WORKDIR /usr/local/WowzaStreamingEngine
 RUN mkdir -p htdocs/webrtc
 COPY html htdocs/webrtc
+RUN echo "https://localhost:9443/webrtc/index.html"
 
 
 
